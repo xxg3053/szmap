@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>深圳公路</title>
+
+    <!-- Bootstrap -->
+    <link href="libs/bootstrap-3.3.4/dist/css/bootstrap.min.css?" rel="stylesheet">
+      <link href="libs/jstree/dist/themes/default/style.css?" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+        </head>
+<body>
+     <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-3">
+                  <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                      <ul class="list-group">
+                          <li class="list-group-item"><a href="#roaddetail">道路概况</a></li>
+                          <li class="list-group-item"><a href="#diseasedetail">病害情况</a></li>
+                          <li class="list-group-item"><a href="#xunchadetail">巡查情况</a></li>
+                          <li class="list-group-item"><a href="#fitdetail">保养情况</a></li>
+                          <li class="list-group-item"><a href="#repdetail">小修情况</a></li>
+                          <li class="list-group-item"><a href="#repdetail">其他资料</a></li>
+                      </ul>
+                  </div>
+              </div>
+               <div class="col-md-9">
+                     <div class="bs-docs-section">
+                        <h1 id="roaddetail" class="page-header">概览</h1>
+                   </div>
+                   <div class="bs-docs-section">
+                       <h1 id="diseasedetail" class="page-header">病害</h1>
+                   </div>
+              </div>
+         </div>
+    </div>
+    <script src="libs/Public/jquery/jquery-1.9.1.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="libs/bootstrap-3.3.4/dist/js/bootstrap.min.js"></script>
+    <script>
+         $(document).ready(function(){
+            $('#myAffix').affix({
+                  offset: {
+                    top: 100,
+                    bottom: function () {
+                      return (this.bottom = $('.footer').outerHeight(true))
+                    }
+                  }
+                });
+         });
+    </script>
+    
+</body>
+</html>

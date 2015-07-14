@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>深圳市公路养护管理平台</title>
+
+    <!-- Bootstrap -->
+    <link href="http://127.0.0.1:9995/libs/bootstrap-3.3.4/dist/css/bootstrap.min.css?" rel="stylesheet">
+      <link href="http://127.0.0.1:9995/libs/jstree/dist/themes/default/style.css?" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>     
+  h2 {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      margin-left: 20px;
+       font-weight:bold;
+  }
+  .sidebar {
+      border: solid 1px #CCCCCC;
+      height:520px;
+      overflow:auto;
+      overflow-x:hidden
+  }
+    .effect01{
+  background-color: #5bc0de;
+  color:#ffffff;
+        text-transform:uppercase;
+        font-size: 30px;
+        font-weight: bold;
+        line-height:20px; 
+  text-shadow:
+    0px 0px 0 #b89800, 
+    1px -1px 0 #b39400, 
+    2px -2px 0 #ad8f00, 
+    3px -3px 0 #a88b00, 
+    4px -4px 0 #a38700, 
+    5px -5px 0 #9e8300, 
+    6px -6px 0 #997f00, 
+    7px -7px 0 #947a00, 
+    8px -8px 0 #8f7600, 
+    9px -9px 0 #8a7200, 
+    10px -10px 0 #856e00, 
+    11px -11px 0 #806a00, 
+    12px -12px 0 #7a6500, 
+    13px -13px 12px rgba(0, 0, 0, 0.55), 
+    13px -13px 1px rgba(0, 0, 0, 0.5);
+}
+</style>
+  </head>
+  <body>
+    <div class="container-fluid">
+    <div class="row" style="background-color: #5bc0de;padding:0px 0px;color: #ffffff;">
+        <h2 class="">深圳市公路养护管理平台<small> v1.1.0</small></h2>
+     </div>
+      <div class="row">
+          <div class="col-md-3">
+            <div class="input-group" style="margin-top:10px;margin-bottom:10px">
+              <input name="searchGlName" type="text" class="form-control" placeholder="公路编号、名称等">
+              <span class="input-group-btn">
+                <button id="seachBtn" class="btn btn-primary" type="button">查询</button>
+              </span>
+            </div>
+           <div id="leftTree" class="sidebar"></div>
+          </div>
+          <div class="col-md-9 content">
+              <div class="row">
+                  <span id="showMessage" class="" style="color:red;"></span>
+                  <div class="btn-group" role="group" aria-label="..." style="float:right">
+                      <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" 
+                                data-toggle="dropdown" aria-expanded="false">
+                          加载图层<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="javascript:void(0)" onclick="loadGLlayer()">公路路网</a></li>
+                          <li><a href="javascript:void(0)" onclick="showDistrict()">区划</a></li>
+                        </ul>
+                      </div>
+                      <button type="button" onclick="toggleControl('line')" class="btn btn-primary btn-sm">测距</button>
+                      <button type="button" onclick="toggleControl('polygon')" class="btn btn-primary btn-sm">测面积</button>
+                      <button type="button" onclick="resetAll()" class="btn btn-primary btn-sm">重置</button>
+                    </div>
+              </div>
+              <div class="row">
+                <div id="kmap" style="width:100%;height:520px"></div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://127.0.0.1:9995/libs/Public/jquery/jquery-1.9.1.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://127.0.0.1:9995/libs/bootstrap-3.3.4/dist/js/bootstrap.min.js"></script>
+    <script src="http://127.0.0.1:9995/libs/OpenLayers-2.13/OpenLayers.js"></script>
+    <script src="http://127.0.0.1:9995/libs/jstree/dist/jstree.js"></script>
+     <script src="js/render.js?a"></script>
+     <script src="js/init.js?ab"></script>
+     <script src="js/utils.js?ac"></script>  
+    <script>
+        $(function () {
+            /**
+            $('#leftTree').jstree({
+                'core' : {
+                    'data' : [
+                        { "text" : "公路", "children" : [
+                                { "text" : "国道" ,
+                                  "children":[
+                                    {"id":"G107","text":"京深线"},
+                                    {"id":"G205","text":"山深线"}]
+                                },
+                                { "text" : "省道" },
+                                { "text" : "县道" },
+                                { "text" : "乡道" }
+                        ]}
+                    ]
+                }
+            });**/
+            $('#leftTree').jstree({
+                "core" : {
+                    "animation" : 0,
+                    "check_callback" : true,
+                    "themes" : { "stripes" : true },
+                    'data' : {
+                      'url' : function (node) {
+                        return 'json/leftTree.json';
+                      },
+                      'data' : function (node) {
+                        return { 'id' : node.id };
+                      }
+                    }
+                  },
+                 "plugins":["search"]
+                 /**
+                "plugins":["contextmenu","search"]
+                "contextmenu":{
+                             "items":{
+                                 "docItem":{
+                                    label: "档案",
+                                    icon:false,
+                                    action: function(obj){
+                                       var re = obj.reference[0];
+                                       var id = re.id.replace('_anchor','');
+                                       if(id.indexOf('#') != -1){
+                                            var i = id.indexOf('#')+1;
+                                            id = id.substr(i);
+                                        }
+                                           //alert(id)
+                                    }
+                                  },
+                                 "zdItem":{
+                                    label: "站点",
+                                    icon:false,
+                                    action: function(obj){
+                                        //alert(obj);
+                                    }
+                                  },
+                                 "yhItem":{
+                                    label: "养护",
+                                    submenu:{
+                                        "diseaseItem":{
+                                        label: "病害",
+                                        icon:false,
+                                        action: function(obj){
+                                              var re = obj.reference[0];
+                                               var id = re.id.replace('_anchor','');
+
+                                        }
+                                      },
+                                     "fitItem":{
+                                        label: "保养台账",
+                                        icon:false,
+                                        action: function(obj){
+                                           // alert(obj);
+                                        }
+                                        
+                                      },
+                                       "repItem":{
+                                        label: "小修台账",
+                                        icon:false,
+                                        action: function(obj){
+                                            //alert(obj);
+                                        }
+                                        
+                                      }
+                                    }
+                                  },
+                                 "detailItem":{
+                                    label: "详情",
+                                    icon:false,
+                                     separator_before:true,
+                                    action: function(obj){
+                                       var re = obj.reference[0];
+                                       var id = re.id.replace('_anchor','');
+                                        window.open("./roaddetail.html?id="+id);
+                                    },
+                                     _disabled:function(obj){
+                                       var re = obj.reference[0];
+                                       var id = re.id.replace('_anchor','');
+                                       if(id.indexOf('#') != -1){
+                                            var i = id.indexOf('#')+1;
+                                            id = id.substr(i);
+                                        }
+                                       
+                                        if(id.length>8){
+                                            return false;
+                                        }else{
+                                            return true;
+                                        }
+                                    }
+                                  }
+                                }
+                             }**/
+            });
+            $('#leftTree').on("changed.jstree", function (e, data) {
+              leftClick(data.selected);
+            });
+        });
+        $(document).ready(function(){
+                $('#seachBtn').bind("click",function(){
+                    var v = $("input[name='searchGlName']").val();
+                    if(v){
+                        search(v);
+                        $('#leftTree').jstree(true).search(v);
+                    }
+                });
+        });
+    </script>
+  </body>
+</html>
